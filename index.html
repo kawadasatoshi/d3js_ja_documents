@@ -555,7 +555,8 @@
   <h2><a name="selections" href="#selections">#</a>注意：本ウェブサイトについて</h2>
   <p>
     本ウェブサイトはD3.jsの公式ドキュメント「D3.js-Data-Driven Documents」の日本語訳サイトです。
-    もしあなたが本ウェブサイトの日本語訳のミスに気づいた場合、お手数ですが<a href="https://github.com/kawadasatoshi/d3js_ja_documents">こちらのリンクから</a>
+    もしあなたが本ウェブサイトの日本語訳のミスに気づいた場合、または更なる改善の余地があると気づいた場合、
+    お手数ですが<a href="https://github.com/kawadasatoshi/d3js_ja_documents">こちらのリンクから</a>
     issueを出してください。
   </p>
 
@@ -621,70 +622,82 @@ for (var i = 0; i &lt; paragraphs.length; i++) {
   paragraph.style.setProperty("color", "blue", null);
 }</code></pre>
 
-  <p>D3 employs a declarative approach, operating on arbitrary sets of nodes called <i>selections</i>. For example, you
-    can rewrite the above loop as:
-
+  <p>D3は宣言型アプローチを採用しており、selectAllと呼ばれるノードの任意のセットを操作します。
+    たとえば、あなたは上記のループを次のように書き換えることができます。
   <pre><code>d3.selectAll("p").style("color", "blue");</code></pre>
+  </p>
 
-  <p>Yet, you can still manipulate individual nodes as needed:
+  <p>また、あなたは必要に応じて個々のノードの操作が可能です。
 
   <pre><code>d3.select("body").style("background-color", "black");</code></pre>
 
-  <p>Selectors are defined by the <a href="https://www.w3.org/TR/selectors-api/">W3C Selectors API</a> and supported
-    natively by modern browsers. The above examples select nodes by tag name (<code>"p"</code> and <code>"body"</code>,
-    respectively). Elements may be selected using a variety of predicates, including containment, attribute values,
-    class and ID.
+  <p>要素の指定は<a href = "https://www.w3.org/TR/selectors-api/">W3CセレクターAPI</a>によって定義されサポートされています。
+    要素は、包含、属性値、クラスとIDによって指定することができます。
+    上記の例だとタグ名(<code>"p"</code> and <code>"body"</code>,)が該当します。
+  </p>
+    
 
-  <p>D3 provides numerous methods for mutating nodes: setting attributes or styles; registering event listeners; adding,
-    removing or sorting nodes; and changing HTML or text content. These suffice for the vast majority of needs. Direct
-    access to the underlying DOM is also possible, as each D3 selection is simply an array of nodes.
+  <p>
+    D3は、ノードを変更するための多数のメソッドを提供します。
+    属性またはスタイルの設定。イベントリスナーの登録。ノードの追加、削除、または並べ替え。 
+    HTMLまたはテキストコンテンツを変更することができます。
+    これらは、大多数のニーズに対して十分な機能を満たしていると思われます。
+    各D3のセレクターは単にノードの配列であるため、基盤となるDOMに直接アクセスすることもできます。
+  </p>
 
   <h2><a name="properties" href="#properties">#</a>Dynamic Properties</h2>
 
-  <p>Readers familiar with other DOM frameworks such as <a href="https://jquery.com/">jQuery</a> should immediately
-    recognize similarities with D3. Yet styles, attributes, and other properties can be specified as <i>functions of
-      data</i> in D3, not just simple constants. Despite their apparent simplicity, these functions can be surprisingly
-    powerful; the <a href="https://github.com/d3/d3-geo/blob/main/README.md#geoPath">d3.geoPath</a> function, for
-    example, projects <a href="https://tools.ietf.org/html/rfc7946">geographic coordinates</a> into SVG <a
-      href="https://www.w3.org/TR/SVG/paths.html#PathData">path data</a>. D3 provides many built-in reusable functions
-    and function factories, such as <a href="https://github.com/d3/d3-shape">graphical primitives</a> for area, line and
-    pie charts.
+  <p><a href="https://jquery.com/">jQuery</a>などの他のDOMフレームワークに精通している読者は、D3との類似点をすぐに認識することができるでしょう。
+    ただし、スタイル、属性、およびその他のプロパティは、単純な定数だけでなく<i>関数型データ</i>として指定できます。
 
-  <p>For example, to randomly color paragraphs:
+    これらの単純で明確な機能にも関わらず、これは驚くべきほどに強力です。
+
+    例えば、<a href="https://github.com/d3/d3-geo/blob/main/README.md#geoPath">d3.geoPath</a> 関数は
+    この <a href="https://tools.ietf.org/html/rfc7946">geographic coordinates</a> プロジェクトにおいて、
+    地理的な情報を<a　href="https://www.w3.org/TR/SVG/paths.html#PathData">SVGデータ</a>.に変換することができました。
+    
+    D3.jsは、エリアチャート、ラインチャート、<a href="https://github.com/d3/d3-shape">円グラフの表現など</a>、多くの組み込みの再利用可能な関数と関数ファクトリを提供します。
+
+  <p>たとえば、段落にランダムに色を付けるには、次のようにします。
 
   <pre><code>d3.selectAll("p").style("color", function() {
   return "hsl(" + Math.random() * 360 + ",100%,50%)";
 });</code></pre>
 
-  <p>To alternate shades of gray for even and odd nodes:
+  <p>偶数ノードと奇数ノードのグレーの色合いを交互にするには
 
   <pre><code>d3.selectAll("p").style("color", function(d, i) {
   return i % 2 ? "#fff" : "#eee";
 });</code></pre>
 
-  <p>Computed properties often refer to bound data. Data is specified as an array of values, and each value is passed as
-    the first argument (<code>d</code>) to selection functions. With the default join-by-index, the first element in the
-    data array is passed to the first node in the selection, the second element to the second node, and so on. For
-    example, if you bind an array of numbers to paragraph elements, you can use these numbers to compute dynamic font
-    sizes:
+  <p>
+    計算されたプロパティは、多くの場合、バインドされたデータを参照します。
+    データは値の配列として指定され、各値は次のように渡されます。
+    最初の引数 (<code>d</code>)は関数に渡すデータの指定です。 
+    デフォルトのインデックスによる結合では、データ配列の最初の要素が選択範囲の最初のノードに渡され、2番目の要素から関数の引数として機能します。
+    たとえば、数値の配列を段落要素にバインドする場合、これらの数値を使用して動的にフォントサイズを指定できます。
+  </p>
 
   <pre><code>d3.selectAll("p")
   .data([4, 8, 15, 16, 23, 42])
     .style("font-size", function(d) { return d + "px"; });</code></pre>
 
-  <p>Once the data has been bound to the document, you can omit the <code>data</code> operator; D3 will retrieve the
-    previously-bound data. This allows you to recompute properties without rebinding.
+  <p>一度データがドキュメントに結びついて仕舞えば、 あなたは <code>data</code> を指定することを省くことができます。
+    D3は以前にバインドされたデータを取得します。
+  </p>
+
 
   <h2><a name="enter-exit" href="#enter-exit">#</a>Enter and Exit</h2>
 
   <aside>Read <a href="https://bost.ocks.org/mike/join/">more about data joins</a>.</aside>
 
-  <p>Using D3’s <i>enter</i> and <i>exit</i> selections, you can create new nodes for incoming data and remove outgoing
-    nodes that are no longer needed.
+  <p>D3の入力と終了の選択を使用して、受信データ用の新しいノードを作成し、不要になった送信ノードを削除できます。
 
-  <p>When data is bound to a selection, each element in the data array is paired with the corresponding node in the
-    selection. If there are fewer nodes than data, the extra data elements form the enter selection, which you can
-    instantiate by appending to the <code>enter</code> selection. For example:
+  <p>
+データがバインドされると、データ配列の各要素が選択範囲の対応するノードとペアになります。
+データよりノードが少ない場合、追加のデータ要素が入力選択を形成します。
+これは、入力選択に追加することでインスタンス化できます。例えば：
+</p>
 
   <pre><code>d3.select("body")
   .selectAll("p")
@@ -692,10 +705,11 @@ for (var i = 0; i &lt; paragraphs.length; i++) {
   .enter().append("p")
     .text(function(d) { return "I’m number " + d + "!"; });</code></pre>
 
-  <p>Updating nodes are the default selection—the result of the <code>data</code> operator. Thus, if you forget about
-    the enter and exit selections, you will automatically select only the elements for which there exists corresponding
-    data. A common pattern is to break the initial selection into three parts: the updating nodes to modify, the
-    entering nodes to add, and the exiting nodes to remove.
+  <p>
+    ノードの更新がデフォルトの選択であり、データ演算子の結果です。
+    したがって、追加と削除の選択を忘れた場合、対応するデータが存在する要素のみが自動的に選択されます。
+    一般的なパターンは、最初の選択を次の3つの部分に分割することです。変更する更新ノード、追加する入力ノード、および削除する終了ノードです。
+  </p>
 
   <pre><code>// Update…
 var p = d3.select("body")
@@ -708,53 +722,65 @@ p.enter().append("p")
     .text(function(d) { return d; });
 
 // Exit…
-p.exit().remove();</code></pre>
+p.exit().remove();
+</code></pre>
 
-  <p>By handling these three cases separately, you specify precisely which operations run on which nodes. This improves
-    performance and offers greater control over transitions. For example, with a bar chart you might initialize entering
-    bars using the old scale, and then transition entering bars to the new scale along with the updating and exiting
-    bars.
+  <p>これらの3つのケースを個別に処理することにより、どの操作をどのノードで実行するかを正確に指定します。これは
+    パフォーマンスを向上させ、遷移をより細かく制御できます。
+    たとえば、棒グラフを使用すると、入力を初期化できます古いスケールを使用してバーを作成し、
+    更新と終了とともに、入力バーを新しいスケールに移行します
+  </p>
 
-  <p>D3 lets you transform documents based on data; this includes both creating and destroying elements. D3 allows you
-    to change an existing document in response to user interaction, animation over time, or even asynchronous
-    notification from a third-party. A hybrid approach is even possible, where the document is initially rendered on the
-    server, and updated on the client via D3.
+  <p>D3を使用すると、データに基づいてドキュメントを変換できます。これには、要素の作成と破棄の両方が含まれます。 D3はあなたを可能にします
+    ユーザーの操作、時間の経過に伴うアニメーション、さらには非同期に応じて既存のドキュメントを変更する
+    サードパーティからの通知。ドキュメントが最初にレンダリングされるハイブリッドアプローチも可能です。
+    サーバー、およびD3を介してクライアントで更新されます。
 
-  <h2><a name="transformation" href="#transformation">#</a>Transformation, not Representation</h2>
+  <h2><a name="transformation" href="#transformation">#</a>新しい表現ではなく手法の移り変わり</h2>
 
-  <p>D3 does not introduce a new visual representation. Unlike <a href="https://processing.org/">Processing</a> or <a
-      href="https://mbostock.github.io/protovis/">Protovis</a>, D3’s vocabulary of graphical marks comes directly from
-    web standards: HTML, SVG, and CSS. For example, you can create SVG elements using D3 and style them with external
-    stylesheets. You can use composite filter effects, dashed strokes and clipping. If browser vendors introduce new
-    features tomorrow, you’ll be able to use them immediately—no toolkit update required. And, if you decide in the
-    future to use a toolkit other than D3, you can take your knowledge of standards with you!
+  <p>
+    D3は新しい視覚的表現を導入していません。 
+    ProcessingやProtovisとは異なり、D3のグラフィックマークの言葉は、HTML、SVG、CSSなどのWeb標準から直接取得されます。
+    たとえば、D3を使用してSVG要素を作成し、外部スタイルシートでスタイルを設定できます。
+    複合フィルター効果、破線のストローク、およびクリッピングを使用できます。
+    ブラウザベンダーが明日新機能を導入した場合、すぐに使用できるようになります。
+    ツールキットの更新は必要ありません。
+    また、将来D3以外のツールキットを使用することにした場合は、標準に関する知識を身に付けることができます。
+  </p>
 
-  <p>Best of all, D3 is easy to debug using the browser’s built-in element inspector: the nodes that you manipulate with
-    D3 are exactly those that the browser understands natively.
+  <p>
+    何よりも、D3は、ブラウザの組み込み要素インスペクタ、つまり操作するノードを使用して簡単にデバッグできます。
+    D3は、ブラウザがネイティブに理解するものとまったく同じです。
+  </p>
 
   <h2><a name="transitions" href="#transitions">#</a>Transitions</h2>
 
-  <p>D3’s focus on transformation extends naturally to animated transitions. Transitions gradually interpolate styles
-    and attributes over time. Tweening can be controlled via easing functions such as “elastic”, “cubic-in-out” and
-    “linear”. D3’s interpolators support both primitives, such as numbers and numbers embedded within strings (font
-    sizes, path data, <i>etc.</i>), and compound values. You can even extend D3’s interpolator registry to support
-    complex properties and data structures.
+  <p>
+    D3の変換への焦点は、アニメーション化されたトランジションに自然に広がります。
+    トランジションは、時間の経過とともにスタイルと属性を徐々に補間します。
+    トゥイーンは、「エラスティック」、「キュービックインアウト」、「リニア」などのイージング機能を介して制御できます。
+    D3の補間器は、数値や文字列に埋め込まれた数値（フォントサイズ、パスデータなど）などのプリミティブと複合値の両方をサポートします。 
+    D3の補間レジストリを拡張して、複雑なプロパティとデータ構造をサポートすることもできます。
+  </p>
 
-  <p>For example, to fade the background of the page to black:
+  <p>たとえば、ページの背景を黒にフェードするには、次のようにします。
 
   <pre><code>d3.select("body").transition()
     .style("background-color", "black");</code></pre>
 
-  <p>Or, to resize circles in a symbol map with a staggered delay:
+  <p>または、シンボルマップの円のサイズを変更するには：
 
   <pre><code>d3.selectAll("circle").transition()
     .duration(750)
     .delay(function(d, i) { return i * 10; })
     .attr("r", function(d) { return Math.sqrt(d * scale); });</code></pre>
 
-  <p>By modifying only the attributes that actually change, D3 reduces overhead and allows greater graphical complexity
-    at high frame rates. D3 also allows sequencing of complex transitions via events. And, you can still use CSS3
-    transitions; D3 does not replace the browser’s toolbox, but exposes it in a way that is easier to use.
+  <p>
+    D3は、実際に変更される属性のみを変更することにより、オーバーヘッドを削減し、グラフィカルな複雑さを軽減します。
+    それも高フレームレートで。 
+    D3では、イベントを介した複雑な遷移のシーケンスも可能です。
+    そして、あなたはまだCSS3を使うことができます。
+    3はブラウザのツールボックスを置き換えるものではありませんが、使いやすい方法でリリースしています。
 
   <p>Want to learn more? Read <a href="https://observablehq.com/@d3/learn-d3">these tutorials</a>.
 
